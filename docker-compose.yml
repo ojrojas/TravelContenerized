@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+
+  sql-identity:
+    image: postgres
+
+  sql-library:
+    image: mcr.microsoft.com/azure-sql-edge
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - sql-identity
+
+  travel.aggregator:
+    image: ${DOCKER_REGISTRY-}travel
+    build:
+      context: .
+      dockerfile: src/Travel.BBf/Travel.Aggregator/Dockerfile
+
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identity
+    build:
+      context: .
+      dockerfile: src/Travel.Services/Identity/Identity.Api/Dockerfile
+
+  library.api:
+    image: ${DOCKER_REGISTRY-}library
+    build:
+      context: .
+      dockerfile: src/Travel.Services/Library/Library.Api/Dockerfile
+

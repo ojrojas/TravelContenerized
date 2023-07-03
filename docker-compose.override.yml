@@ -1,0 +1,98 @@
+version: '3.4'
+
+services:
+
+  sql-identity:
+    container_name: sql-identity
+    environment:
+      - POSTGRES_PASSWORD=${IDENTITY_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - sqldata-identity-store:/var/lib/postgresql/data \
+    networks:
+      - identitynet
+
+  sql-library:
+    container_name: sql-library
+    environment:
+      - MSSQL_SA_PASSWORD=${LIBRARY_PASSWORD}
+      - MSSQL_USER=SA
+      - ACCEPT_EULA=Y
+    ports:
+      - "5433:1433"
+    volumes:
+      - sqldata-library-store:/var/opt/mssql
+    networks:
+      - librarynet
+
+  pgadmin:
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=example@example.com
+      - PGADMIN_DEFAULT_PASSWORD=${IDENTITY_PASSWORD}
+    ports:
+      - "6354:80"
+    networks:
+      - identitynet
+
+  travel.aggregator:
+    container_name: travel.aggregator
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - IdentityUrl=${IDENTITY_URL}
+    ports:
+      - "5010:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+  identity.api:
+    container_name: identity.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionIdentity=host=sql-identity;port=5432;database=IdentityDb;username=postgres;password=${IDENTITY_PASSWORD}
+      - UrlsAllow=identity@http://${DNS_DOCKER_TRAVEL_IP}:5105,library@http://${DNS_DOCKER_TRAVEL_IP}:5205,aggregator@http://${DNS_DOCKER_TRAVEL_IP}:5010
+      - SecretPhrase=Tr@V3l73$7@PPL1C@710N
+    ports:
+      - "5105:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    depends_on:
+      - sql-identity
+    networks:
+      - identitynet
+      - librarynet
+
+  library.api:
+    container_name: library.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionLibrary=Server=tcp:sql-library,1433;Database=LibraryDb;User Id=sa;Password=${LIBRARY_PASSWORD};Persist Security Info=True;Encrypt=false
+      - IdentityUrl=${IDENTITY_URL}
+    ports:
+      - "5205:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    depends_on:
+      - identity.api
+      - sql-library
+    networks:
+      - identitynet
+
+networks:
+  identitynet:
+    driver: bridge
+  librarynet:
+    driver: bridge
+
+volumes:
+  sqldata-identity-store:
+    external: false
+
+  sqldata-library-store:
+    external: false

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Dtos\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dtos\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Travel.BuildingBlocks\Travel.Commons\Travel.Commons.csproj" />
+    <ProjectReference Include="..\..\..\Travel.BuildingBlocks\Travel.BaseHttps\Travel.BaseHttps.csproj" />
+    <ProjectReference Include="..\..\..\Travel.BuildingBlocks\Travel.Repository\Travel.Repository.csproj" />
+  </ItemGroup>
+</Project>

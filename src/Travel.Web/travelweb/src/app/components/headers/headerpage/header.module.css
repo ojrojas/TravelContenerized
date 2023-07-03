@@ -1,0 +1,12 @@
+.container {
+    justify-content: space-between;
+}
+
+.containerName {
+
+}
+
+.containerActions {
+    display: flex;
+    justify-content: space-between;
+}

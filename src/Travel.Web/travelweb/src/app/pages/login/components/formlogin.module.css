@@ -1,0 +1,27 @@
+.container {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form {
+    display: flex;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    height: 400px;
+    max-height: 400px;
+    width: 300px;
+}
+
+.lines {
+    margin-top: 10px;
+    width:80%;
+    background-color: grey !important;
+    font-weight: 100;
+}
+
+.buttons {
+    margin-top: 20px;
+}

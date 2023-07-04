@@ -42,6 +42,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - IdentityUrl=${IDENTITY_URL}
+      - GRPC_URL=http://library.api:81
     ports:
       - "5010:80"
     volumes:

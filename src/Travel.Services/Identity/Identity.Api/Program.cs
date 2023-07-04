@@ -1,9 +1,7 @@
+using Identity.Api.Endpoints;
 using Identity.Core.Helpers;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using OpenIddict.Validation.AspNetCore;
-using Identity.Api.Endpoints;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

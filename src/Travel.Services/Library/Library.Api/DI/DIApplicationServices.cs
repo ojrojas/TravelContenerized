@@ -1,5 +1,4 @@
-﻿using System;
-using Travel.Repository.Data;
+﻿using Travel.Repository.Data;
 
 namespace Library.Api.DI;
 
@@ -12,9 +11,7 @@ public static class DIApplicationServices
         services.AddTransient(typeof(BookRepository));
         services.AddTransient(typeof(EditorialRepository));
 
-		services.AddTransient<IAuthorService, AuthorService>();
-        services.AddTransient<IBookService, BookService>();
-        services.AddTransient<IEditorialService, EditorialService>();
+		services.AddAutoMapper(typeof(Program));
 
         return services;
 	}

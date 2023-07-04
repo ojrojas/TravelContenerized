@@ -6,9 +6,9 @@
     public class Author : BaseEntity, IAggregateRoot
     {
         [StringLength(45)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         [StringLength(45)]
-        public string LastName { get; set; }
-        public ICollection<AuthorsBooks> AuthorsBooks { get; set; }
+        public string LastName { get; set; } = null!;
+        public ICollection<AuthorsBooks> AuthorsBooks { get; set; } = null!;
     }
 }

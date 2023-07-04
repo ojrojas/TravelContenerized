@@ -53,7 +53,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionIdentity=host=sql-identity;port=5432;database=IdentityDb;username=postgres;password=${IDENTITY_PASSWORD}
-      - UrlsAllow=identity@http://${DNS_DOCKER_TRAVEL_IP}:5105,library@http://${DNS_DOCKER_TRAVEL_IP}:5205,aggregator@http://${DNS_DOCKER_TRAVEL_IP}:5010
+      - UrlsAllow=identity@http://${DNS_DOCKER_TRAVEL_IP}:5105,library@http://${DNS_DOCKER_TRAVEL_IP}:5206,aggregator@http://${DNS_DOCKER_TRAVEL_IP}:5010
       - SecretPhrase=Tr@V3l73$7@PPL1C@710N
     ports:
       - "5105:80"
@@ -73,8 +73,9 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ConnectionLibrary=Server=tcp:sql-library,1433;Database=LibraryDb;User Id=sa;Password=${LIBRARY_PASSWORD};Persist Security Info=True;Encrypt=false
       - IdentityUrl=${IDENTITY_URL}
+      - GRPC_PORT=81
     ports:
-      - "5205:80"
+      - "5206:81"
     volumes:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro

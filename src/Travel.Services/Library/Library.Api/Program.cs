@@ -1,5 +1,6 @@
 using HealthChecks.UI.Client;
 using Library.Api.DI;
+using Library.Api.Services;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Logging;
@@ -7,6 +8,10 @@ using Serilog;
 using Travel.Commons.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Host.UseSerilog();
+Log.Logger = CreateSerilogLogger();
 
 var configuration = builder.Configuration;
 // Add services to the container.
@@ -23,13 +28,13 @@ builder.Services.AddJwtApplication(configuration);
 
 builder.Services.AddApplicationServices(configuration);
 
-//builder.WebHost.ConfigureKestrel(opt =>
-//{
-//    opt.Listen(System.Net.IPAddress.Any, configuration.GetValue("PORT", 443), listenOptions =>
-//    {
-//        listenOptions.Protocols = HttpProtocols.Http2;
-//    });
-//});
+builder.WebHost.ConfigureKestrel(opt =>
+{
+    opt.Listen(System.Net.IPAddress.Any, configuration.GetValue("GRPC_PORT", 5173), listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+    });
+});
 
 builder.Services.AddHealthChecks();
 
@@ -43,6 +48,8 @@ builder.Services.AddCors(options =>
         .AllowCredentials());
 });
 
+builder.Services.AddGrpc();
+builder.Services.AddGrpcReflection();
 
 var app = builder.Build();
 
@@ -59,11 +66,16 @@ if (app.Environment.IsDevelopment())
     IdentityModelEventSource.ShowPII = true;
 }
 
+
 app.UseRouting();
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGrpcService<AuthorService>();
+app.MapGrpcService<BookService>();
+app.MapGrpcService<EditorialService>();
 
 app.MapControllers();
 app.MapHealthChecks("/health",
@@ -78,6 +90,8 @@ app.MapHealthChecks("/liveness",
     {
         Predicate = response => response.Name.Contains("self")
     });
+
+app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 app.Run();
 

@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Dtos\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dtos\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Travel.BuildingBlocks\Travel.Commons\Travel.Commons.csproj" />
     <ProjectReference Include="..\..\..\Travel.BuildingBlocks\Travel.BaseHttps\Travel.BaseHttps.csproj" />
     <ProjectReference Include="..\..\..\Travel.BuildingBlocks\Travel.Repository\Travel.Repository.csproj" />

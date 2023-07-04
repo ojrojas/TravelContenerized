@@ -1,0 +1,171 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Library.Api";
+
+package library;
+
+service EditorialTravelService {
+    rpc CreateEditorial(CreateEditorialRequest) returns(CreateEditorialResponse);
+    rpc UpdateEditorial(UpdateEditorialRequest) returns(UpdateEditorialResponse);
+    rpc DeleteEditorial(DeleteEditorialRequest) returns(DeleteEditorialResponse);
+    rpc ListEditorials(google.protobuf.Empty) returns (ListEditorialsResponse);
+    rpc GetEditorialById(GetEditorialByIdRequest) returns(GetEditorialByIdResponse);
+}
+
+service AuthorTravelService {
+    rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse);
+    rpc UpdateAuthor(UpdateAuthorRequest) returns (UpdateAuthorResponse);
+    rpc DeleteAuthor(DeleteAuthorRequest) returns (DeleteAuthorResponse);
+    rpc ListAuthors (google.protobuf.Empty) returns (ListAuthorsResponse);
+    rpc GetAuthorById(GetAuthorByIdRequest) returns (GetAuthorByIdResponse);
+}
+
+service BookTravelService {
+    rpc CreateBook(CreateBookRequest) returns (CreateBookResponse);
+    rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse);
+    rpc DeleteBook(DeleteBookRequest) returns (DeleteBookResponse);
+    rpc ListBooks(google.protobuf.Empty) returns (ListBooksResponse);
+    rpc GetBookById(GetBookByIdRequest) returns(GetBookByIdResponse);
+}
+
+message CreateEditorialRequest {
+    Editorial editorial = 1;
+}
+
+message CreateEditorialResponse {
+    Editorial editorialCreated = 1;
+}
+
+message UpdateEditorialRequest {
+    Editorial editorial = 1;
+}
+
+message UpdateEditorialResponse {
+    Editorial editorialUpdated = 1;
+}
+
+message DeleteEditorialRequest {
+    string id = 1;
+}
+
+message DeleteEditorialResponse {
+    Editorial editorialDeleted = 1;
+}
+
+message ListEditorialsResponse {
+    repeated Editorial editorials = 1;
+}
+
+message GetEditorialByIdRequest {
+    string id = 1;
+}
+
+message GetEditorialByIdResponse {
+    Editorial editorial = 1;
+}
+
+message Editorial {
+    string id = 1;
+    string name = 2;
+    string sede = 3;
+    repeated Book books = 4;
+}
+
+message CreateAuthorRequest {
+   Author author = 1;
+}
+
+message CreateAuthorResponse {
+    Author authorCreated = 1;
+}
+
+message UpdateAuthorRequest {
+    Author author = 1;
+}
+
+message UpdateAuthorResponse {
+    Author authorUpdated = 1;
+}
+
+message DeleteAuthorRequest {
+    string id = 1;
+}
+
+message DeleteAuthorResponse {
+    Author authorDeleted = 1;
+}
+
+message ListAuthorsResponse {
+    repeated Author authors = 1;
+}
+
+message GetAuthorByIdRequest {
+    string id = 1;
+}
+
+message GetAuthorByIdResponse {
+    Author author = 1;
+}
+
+message Author {
+    string id = 1;
+    string name = 2;
+    string lastName = 3;
+    AuthorsBooks authorsBooks = 4;
+}
+
+message AuthorsBooks {
+    string id = 1;
+    Author author = 2;
+    string authorId = 3;
+    int32 bookId = 4;
+    Book book = 5;
+}
+
+message CreateBookRequest {
+    Book book = 1;
+}
+
+message CreateBookResponse {
+    Book bookCreated = 1;
+}
+
+message DeleteBookRequest {
+    string id = 1;
+}
+
+message DeleteBookResponse {
+    Book bookDeleted = 1;
+}
+
+message UpdateBookRequest {
+    Book book = 1;
+}
+
+message UpdateBookResponse {
+    Book bookUpdated = 1;
+}
+
+message ListBooksResponse {
+    repeated Book books = 1;
+}
+
+message GetBookByIdRequest {
+    string id = 1;
+}
+
+message GetBookByIdResponse {
+    Book book = 1;
+}
+
+message Book {
+    int32 iSBN = 1;
+    string title = 2;
+    string sipnosis = 3;
+    int32 pages = 4;
+    string editorialId = 5;
+    Editorial editorial = 6;
+    repeated AuthorsBooks authorsBooks = 7;
+}

@@ -24,16 +24,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-    {
-        options.LoginPath = "/login";
-    });
-
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
+builder.Services.AddAuthentication(option =>
 {
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    option.DefaultScheme = Schemes.Bearer;
+    option.DefaultChallengeScheme = Schemes.Bearer;
 });
 
 var urls = configuration["UrlsAllow"];
@@ -46,9 +40,7 @@ builder.Services.AddCors(options =>
     builder => builder.WithOrigins(clientUrls.Select(x=> x.Value).ToArray()).AllowAnyMethod().AllowAnyHeader());
 });
 
-
 var app = builder.Build();
-
 
 using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;

@@ -82,7 +82,7 @@ const DetailUserComponent: React.FC<Props> = ({ userDetail, onClose }) => {
                             User name
 						</Typography>
 						<Typography gutterBottom variant="h5" component="div">
-							{userDetail?.userName} {userDetail?.email} {userDetail?.normalizedUserName}
+							{userDetail?.userName} {userDetail?.normalizedUserName}
 						</Typography>
 						<Typography variant="body2" color="text.secondary" >
                             Email

@@ -54,10 +54,7 @@ const ListUsersComponent: React.FC<ListUserProps> = ({setEditUser}) => {
                                 Full Name
 							</TableCell>
 							<TableCell>
-                                Type User
-							</TableCell>
-							<TableCell>
-                                Status
+                                Email
 							</TableCell>
 							<TableCell>
                                 Actions
@@ -65,7 +62,7 @@ const ListUsersComponent: React.FC<ListUserProps> = ({setEditUser}) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{getAllUserResponse && getAllUserResponse.users
+						{getAllUserResponse && getAllUserResponse.applicationsUsers
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map((user) => {
 								return (
@@ -89,7 +86,7 @@ const ListUsersComponent: React.FC<ListUserProps> = ({setEditUser}) => {
 			<TablePagination
 				rowsPerPageOptions={[10, 25, 100]}
 				component="div"
-				count={getAllUserResponse?.users.length ?? 0}
+				count={getAllUserResponse?.applicationsUsers.length ?? 0}
 				rowsPerPage={rowsPerPage}
 				page={page}
 				onPageChange={handleChangePage}

@@ -11,7 +11,7 @@ class HttpClientApplication {
 		this.headers = new Headers();
 		const state = StorageAppService.GetState();
 		if (state.login?.loginApplicationResponse?.access_token !== undefined)
-			this.headers.append("authorization", `Bearer ${state.login?.loginApplicationResponse?.token}`);
+			this.headers.append("authorization", `Bearer ${state.login?.loginApplicationResponse?.access_token}`);
 		if(headersList ===undefined) {
 			this.headers.append("mode", "cors");
 			this.headers.append("Accept", "application/json");

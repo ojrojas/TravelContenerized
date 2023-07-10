@@ -11,7 +11,8 @@ public class SeedIdentity
 			LastName = "Perele",
 			Identification = "123456789",
 			UserName ="pepe@example.com",
-			PasswordHash ="Abc123456#"
+			Email = "pepe@example.com",
+            PasswordHash ="Abc123456#"
 		};
 	}
 }

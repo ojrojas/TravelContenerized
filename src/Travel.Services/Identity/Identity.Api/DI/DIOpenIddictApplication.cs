@@ -1,4 +1,7 @@
-﻿namespace Identity.Api.DI;
+﻿using Microsoft.Extensions.Options;
+using OpenIddict.Server;
+
+namespace Identity.Api.DI;
 
 public static class DIOpenIddictApplication
 {
@@ -17,7 +20,6 @@ public static class DIOpenIddictApplication
                 // this implementation only need allow password and credentials flow
                 opt.AllowClientCredentialsFlow()
                 .AllowPasswordFlow()
-                .AcceptAnonymousClients()
                 .AllowAuthorizationCodeFlow()
                 .RequireProofKeyForCodeExchange();
 

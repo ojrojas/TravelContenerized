@@ -5,8 +5,7 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { Stack } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { createPortal } from "react-dom";
-import { closeSnackBarMajorVillage } from "./redux/snackbarslice";
+import { closeSnackBar } from "./redux/snackbarslice";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 	props,
@@ -36,7 +35,7 @@ export function TransitionDown(props: TransitionProps) {
 	return <Slide {...props} direction="down" />;
 }
 
-const SnackbarMajorVillage: React.FC = () => {
+const SnackbarApp: React.FC = () => {
 	const snackbarState = useAppSelector(state => state.snack.optionSnackBar);
 	const dispatch = useAppDispatch();
 
@@ -45,11 +44,11 @@ const SnackbarMajorVillage: React.FC = () => {
 	return (<Stack sx={{ width: "100%", zIndex:10 }}>
 		<Snackbar
 			open={snackbarState.open}
-			onClose={()=> dispatch(closeSnackBarMajorVillage())}
+			onClose={()=> dispatch(closeSnackBar())}
 			TransitionComponent={TransitionLeft}
 			autoHideDuration={snackbarState.autoHideDuration}
 			key={"snackbar-major-village"}>
-			<Alert onClose={()=> dispatch(closeSnackBarMajorVillage())} severity={snackbarState.severity} sx={{ width: "100%" }}>
+			<Alert onClose={()=> dispatch(closeSnackBar())} severity={snackbarState.severity} sx={{ width: "100%" }}>
 				<AlertTitle>
 					{snackbarState.title}
 				</AlertTitle>
@@ -59,4 +58,4 @@ const SnackbarMajorVillage: React.FC = () => {
 	</Stack>);
 };
 
-export default SnackbarMajorVillage;
+export default SnackbarApp;

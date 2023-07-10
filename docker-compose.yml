@@ -14,7 +14,7 @@ services:
       - sql-identity
 
   travel.aggregator:
-    image: ${DOCKER_REGISTRY-}travel
+    image: ${DOCKER_REGISTRY-}aggregator
     build:
       context: .
       dockerfile: src/Travel.BBf/Travel.Aggregator/Dockerfile
@@ -31,3 +31,11 @@ services:
       context: .
       dockerfile: src/Travel.Services/Library/Library.Api/Dockerfile
 
+ # travel.web:
+ #   image: ${DOCKER_REGISTRY-}travel
+ #   build:
+ #     context: .
+ #     dockerfile: src/Travel.Web/travelweb/Dockerfile
+ #     args:
+ #       - REACT_APP_ROUTE_API_IDENTITY=${IDENTITY_URL}
+ #       - REACT_APP_ROUTE_API_AGGREGATOR=$http://{DNS_DOCKER_TRAVEL_IP}:5010

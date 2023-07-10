@@ -1,22 +1,42 @@
 import StorageAppService from "./storage.service";
+export interface IHeaderModel {
+	name:string,
+	value:string
+}
 
 class HttpClientApplication {
 	private headers: Headers;
 
-	constructor() {
+	constructor(headersList:IHeaderModel[] | undefined) {
 		this.headers = new Headers();
 		const state = StorageAppService.GetState();
-		if (state.login?.loginApplicationResponse?.token !== undefined)
+		if (state.login?.loginApplicationResponse?.access_token !== undefined)
 			this.headers.append("authorization", `Bearer ${state.login?.loginApplicationResponse?.token}`);
-		this.headers.append("mode", "cors");
-		this.headers.append("Accept", "application/json");
-		this.headers.append("Content-Type", "application/json");
-		this.headers.append("Access-Control-Allow-Origin", "*");
+		if(headersList ===undefined) {
+			this.headers.append("mode", "cors");
+			this.headers.append("Accept", "application/json");
+			this.headers.append("Content-Type", "application/json");
+			this.headers.append("Access-Control-Allow-Origin", "*");
+		}
+		else{
+			headersList.forEach(element => {
+				this.headers.append(element.name, element.value);
+			});
+		}
 	}
 
 	public Get = async <T>(url: string): Promise<T> => {
 		try {
 			const response = await fetch(url, { headers: this.headers });
+			return response.json() as T;
+		} catch (error) {
+			throw Error(`Error: ${error}`);
+		}
+	};
+
+	public Login = async <T>(url: string, bodyData: any): Promise<T> => {
+		try {
+			const response = await fetch(url, { method: "POST", body: bodyData, headers: this.headers });
 			return response.json() as T;
 		} catch (error) {
 			throw Error(`Error: ${error}`);

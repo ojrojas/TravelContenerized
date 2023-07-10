@@ -6,7 +6,7 @@ import HttpClientApplication from "../../../core/services/api.service";
 
 export const createUserApplication = createAsyncThunk(
 	"userapplication/createuserapplication", async (request: ICreateUserApplicationRequest)=> {
-		const api = new HttpClientApplication();
+		const api = new HttpClientApplication(undefined);
 		const response = await api.Post<ICreateUserApplicationResponse>(
 			RouteHttps.userApplication.createserapplication,
 			request

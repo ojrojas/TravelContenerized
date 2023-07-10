@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MajorVillageSnackBarOptions } from "../majorvillagesnackbaroptions";
+import { SnackBarOptions } from "../snackbaroptions";
 
-const initialOptions: MajorVillageSnackBarOptions = {
+const initialOptions: SnackBarOptions = {
 	open: false,
 	message: "",
 	severity: "info",
@@ -11,8 +11,8 @@ const initialOptions: MajorVillageSnackBarOptions = {
 };
 
 interface State {
-	optionSnackBar: MajorVillageSnackBarOptions;
-	optionSnackBarActions: MajorVillageSnackBarOptions;
+	optionSnackBar: SnackBarOptions;
+	optionSnackBarActions: SnackBarOptions;
 }
 
 const initialState: State = {
@@ -24,17 +24,17 @@ const snackBarSlice = createSlice({
 	name: "snackbar",
 	initialState: initialState,
 	reducers: {
-		openSnackBarMajorVillage: (state, action: PayloadAction<MajorVillageSnackBarOptions>) => {
+		openSnackBar: (state, action: PayloadAction<SnackBarOptions>) => {
 			state.optionSnackBar.message = action.payload.message;
 			state.optionSnackBar.open = true;
 			state.optionSnackBar.severity = action.payload.severity;
 			state.optionSnackBar.title = action.payload.title;
 			state.optionSnackBar.autoHideDuration = action.payload.autoHideDuration;
 		},
-		closeSnackBarMajorVillage: (state) => {
+		closeSnackBar: (state) => {
 			state.optionSnackBar = initialOptions;
 		},
-		openSnackBarActionsMajorVillage: (state, action: PayloadAction<MajorVillageSnackBarOptions>) => {
+		openSnackBarActions: (state, action: PayloadAction<SnackBarOptions>) => {
 			state.optionSnackBarActions.message = action.payload.message;
 			state.optionSnackBarActions.title = action.payload.title;
 			state.optionSnackBarActions.severity = action.payload.severity;
@@ -42,7 +42,7 @@ const snackBarSlice = createSlice({
 			state.optionSnackBarActions.action = action.payload.action;
 			state.optionSnackBarActions.open = true;
 		},
-		closeSnackBarActionsMajorVillage: (state) => {
+		closeSnackBarActions: (state) => {
 			state.optionSnackBarActions = initialOptions;
 		},
 		executeAction: (state, action: PayloadAction<boolean>) => {
@@ -55,9 +55,9 @@ const snackBarSlice = createSlice({
 
 export default snackBarSlice.reducer;
 export const {
-	openSnackBarMajorVillage,
-	closeSnackBarMajorVillage,
-	openSnackBarActionsMajorVillage,
-	closeSnackBarActionsMajorVillage,
+	openSnackBar,
+	closeSnackBar,
+	openSnackBarActions,
+	closeSnackBarActions,
 	executeAction,
 } = snackBarSlice.actions;

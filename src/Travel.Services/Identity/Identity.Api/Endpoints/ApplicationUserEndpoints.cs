@@ -4,39 +4,36 @@ public static class ApplicationUserEndpoints
 {
 	public static RouteGroupBuilder ApplicationUserEndpointsGroup(this RouteGroupBuilder group)
 	{
-        group.MapPost("/login", [AllowAnonymous] async (
-    [FromServices] IApplicationUserService _service, LoginApplicationUserRequest _request, CancellationToken cancellationToken) => {
-        return await _service.LoginAsync(_request, cancellationToken);
-    });
-
-        group.MapPost("/token", async (HttpContext context, IOpenIddictApplicationManager _applicationManager, IOpenIddictScopeManager _scopeManager) =>
+        group.MapPost("/connect/token", [IgnoreAntiforgeryToken]
+            async (HttpContext context,
+                   IApplicationUserService _service,
+                   IOpenIddictApplicationManager _applicationManager,
+                   IOpenIddictScopeManager _scopeManager) =>
         {
             var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException("Error request operation not found clientcredentials");
+
             if (request.IsClientCredentialsGrantType())
             {
-                ArgumentNullException.ThrowIfNull(request.ClientId);
+                return await CreateSignInLogin(_applicationManager, _scopeManager, request);
+            }
 
-                var application = await _applicationManager.FindByClientIdAsync(request.ClientId);
-                if (application == null)
-                {
-                    throw new InvalidOperationException("The application details cannot be found in the database.");
-                }
+            if(request.IsAuthorizationCodeGrantType())
+            {
+                var authentication = await context.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                return await CreateSignInLogin(_applicationManager, _scopeManager, request, authentication);
+            }
 
-                // Create the claims-based identity that will be used by OpenIddict to generate tokens.
-                var identity = new ClaimsIdentity(
-                    authenticationType: TokenValidationParameters.DefaultAuthenticationType,
-                    nameType: Claims.Name,
-                    roleType: Claims.Role);
+            if(request.IsPasswordGrantType())
+            {
+                var response = await _service.LoginAsync(
+                    new() {
+                        ClientId = request.ClientId,
+                        UserName = request.Username,
+                        Password = request.Password,
+                        Scopes = request.GetScopes()
+                    }, default);
 
-                // Add the claims that will be persisted in the tokens (use the client_id as the subject identifier).
-                identity.SetClaim(Claims.Subject, await _applicationManager.GetClientIdAsync(application));
-                identity.SetClaim(Claims.Name, await _applicationManager.GetDisplayNameAsync(application));
-
-                identity.SetScopes(request.GetScopes());
-                identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
-                identity.SetDestinations(GetDestinations);
-
-                return Results.SignIn(new ClaimsPrincipal(identity), new(), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                return response;
             }
 
             throw new NotImplementedException("The specified grant type is not implemented.");
@@ -48,11 +45,13 @@ public static class ApplicationUserEndpoints
 
             if (!result.Succeeded)
             {
+                var url = context.Request.PathBase + context.Request.Path + QueryString.Create(
+                           context.Request.HasFormContentType ? context.Request.Form.ToList() : context.Request.Query.ToList());
+
                 return Results.Challenge(
                     properties: new AuthenticationProperties
                     {
-                        RedirectUri = context.Request.PathBase + context.Request.Path + QueryString.Create(
-                           context.Request.HasFormContentType ? context.Request.Form.ToList() : context.Request.Query.ToList())
+                        RedirectUri = url,
                     }, new List<string> { CookieAuthenticationDefaults.AuthenticationScheme });
             }
 
@@ -76,7 +75,7 @@ public static class ApplicationUserEndpoints
 
             identity.SetScopes(request.GetScopes());
             identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
-            identity.SetDestinations(GetDestinations);
+            identity.SetDestinations(GetDestination.GetDestinations);
 
             return Results.SignIn(new ClaimsPrincipal(identity), new(), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         });
@@ -96,16 +95,42 @@ public static class ApplicationUserEndpoints
         return group;
 	}
 
-    private static IEnumerable<string> GetDestinations(Claim claim)
+    private static async Task<IResult> CreateSignInLogin(
+        IOpenIddictApplicationManager _applicationManager,
+        IOpenIddictScopeManager _scopeManager,
+        OpenIddictRequest request,
+        AuthenticateResult? authentication = null)
     {
-        return claim.Type switch
-        {
-            Claims.Name or
-            Claims.Subject
-                => new[] { Destinations.AccessToken, Destinations.IdentityToken },
+        ArgumentNullException.ThrowIfNull(request.ClientId);
 
-            _ => new[] { Destinations.AccessToken },
-        };
+        var application = await _applicationManager.FindByClientIdAsync(request.ClientId);
+        if (application == null)
+        {
+            throw new InvalidOperationException("The application details cannot be found in the database.");
+        }
+
+        // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+        ClaimsIdentity identity;
+
+        if(authentication is not null)
+        identity = new ClaimsIdentity(
+            authentication?.Principal?.Claims,
+            authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+            nameType: Claims.Name,
+            roleType: Claims.Role);
+        else identity = new ClaimsIdentity(
+            authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+            nameType: Claims.Name,
+            roleType: Claims.Role);
+
+        // Add the claims that will be persisted in the tokens (use the client_id as the subject identifier).
+        identity.SetClaim(Claims.Subject, await _applicationManager.GetClientIdAsync(application));
+        identity.SetClaim(Claims.Name, await _applicationManager.GetDisplayNameAsync(application));
+
+        identity.SetScopes(request.GetScopes());
+        identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
+        identity.SetDestinations(GetDestination.GetDestinations);
+
+        return Results.SignIn(new ClaimsPrincipal(identity), new(), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }
 }
-

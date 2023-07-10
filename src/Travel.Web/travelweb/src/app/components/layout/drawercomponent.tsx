@@ -52,7 +52,7 @@ const SwipeableTemporaryDrawer: React.FC = () => {
 			<CssBaseline />
 			<DrawerHeader>
 				{state ? <Typography style={{ textAlign: "center", width: "100%" }} variant='h6' component={"span"} >
-					Major Village
+					Travel 
 				</Typography> : null}
 			</DrawerHeader>
 			<Divider />

@@ -43,7 +43,7 @@ public interface IApplicationUserService
     /// <param name="request">Request info user, pass</param>
     /// <param name="cancellationToken">Cancellation token request</param>
     /// <returns>Login application token</returns>
-    ValueTask<LoginApplicationUserResponse> LoginAsync(LoginApplicationUserRequest request, CancellationToken cancellationToken);
+    ValueTask<IResult> LoginAsync(LoginApplicationUserRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Update application user 

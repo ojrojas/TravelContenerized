@@ -1,8 +1,8 @@
 import React from "react";
-import { MajorVillageSnackBarOptions } from "../../components/snackbar/majorvillagesnackbaroptions";
+import { SnackBarOptions } from "../../components/snackbar/snackbaroptions";
 import { useAppSelector } from "../../hooks";
 
-export const SnackBarMajorVillageContext = React.createContext<MajorVillageSnackBarOptions>({
+export const SnackBarMajorVillageContext = React.createContext<SnackBarOptions>({
 	message: "",
 	severity: "info",
 	title: undefined,

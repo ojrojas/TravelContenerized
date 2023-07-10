@@ -3,7 +3,7 @@ import { Box, Button,  CardActions, CardContent, Grid, Typography } from "@mui/m
 import { IUser } from "../../../core/models/user/user";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { deleteUser, getAllUsers } from "../redux/users-actions";
-import { closeSnackBarActionsMajorVillage, closeSnackBarMajorVillage, openSnackBarActionsMajorVillage, openSnackBarMajorVillage } from "../../../components/snackbar/redux/snackbarslice";
+import { closeSnackBarActions, closeSnackBar, openSnackBarActions, openSnackBar } from "../../../components/snackbar/redux/snackbarslice";
 
 interface Props {
     userDetail?: IUser;
@@ -24,24 +24,24 @@ const DetailUserComponent: React.FC<Props> = ({ userDetail, onClose }) => {
 			submitDelete(result);
 			break;
 		default:
-			closeSnackBarMajorVillage();
+			closeSnackBar();
 			break;
 		}
 	};
 
 	const submitDelete = async (result: boolean) => {
-		dispatch(closeSnackBarMajorVillage());
+		dispatch(closeSnackBar());
 		if (result) {
 			dispatch(deleteUser({ id:  userDetail?.email })).unwrap().then(async (response) => {
-				dispatch(closeSnackBarActionsMajorVillage());
+				dispatch(closeSnackBarActions());
 				if (response?.userDeleted !== null) {
-					dispatch(openSnackBarMajorVillage({
+					dispatch(openSnackBar({
 						message: "User is deleted!",
 						severity: "success",
 						title: "Users"
 					}));
 				} else {
-					dispatch(openSnackBarMajorVillage({
+					dispatch(openSnackBar({
 						message: "Error user is not delete",
 						severity: "error",
 						title: "Users"
@@ -55,7 +55,7 @@ const DetailUserComponent: React.FC<Props> = ({ userDetail, onClose }) => {
 
 	const createApplicationUser = async () => {
 		setType("add");
-		dispatch(openSnackBarActionsMajorVillage({
+		dispatch(openSnackBarActions({
 			message: "Do you assign username and password?",
 			severity: "warning",
 			title: "Users",
@@ -64,7 +64,7 @@ const DetailUserComponent: React.FC<Props> = ({ userDetail, onClose }) => {
 
 	const operationDelete = async () => {
 		setType("delete");
-		await dispatch(openSnackBarActionsMajorVillage({
+		await dispatch(openSnackBarActions({
 			title: "Users",
 			message: "Do you delete this user?",
 			severity: "warning",

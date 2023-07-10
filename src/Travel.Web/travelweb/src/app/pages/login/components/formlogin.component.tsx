@@ -12,13 +12,21 @@ import { ILoginApplicationResponse } from "../../../core/dtos/userapplication/lo
 import { updateLogged } from "../redux/login.slice";
 import { RouteConstanstPage } from "../../../core/constants/route.pages.constants";
 import { useNavigate } from "react-router-dom";
-import { openSnackBarMajorVillage } from "../../../components/snackbar/redux/snackbarslice";
+import { openSnackBar } from "../../../components/snackbar/redux/snackbarslice";
 
 const FormLoginComponent: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const navigateOn = useNavigate();
 	const { logged } = useAppSelector(state => state.login);
 	const { register, handleSubmit, formState: { errors } } = useForm<ILoginApplicationRequest>({
+		defaultValues: {
+			client_id: "travelweb-client",
+			client_secret : "07c4d6bf-4da5-433b-98ff-9545172955a7",
+			grant_type : "password",
+			username : 	"pepe@example.com",
+			password : 	"Abc123456#",
+			scope : "aggregator"
+		},
 		mode: "all",
 		resolver: useYupValidationResolver(schema)
 	});
@@ -29,23 +37,24 @@ const FormLoginComponent: React.FC = () => {
 	}, [dispatch, navigateOn, logged]);
 
 	const onSubmit = handleSubmit(async (data) => await dispatch(login(data)).unwrap().then(async (response: ILoginApplicationResponse) => {
-		if (response.token !== null) {
+		if (response.access_token !== undefined) {
 			await dispatch(updateLogged(true));
 			navigateOn(RouteConstanstPage.dashboard);
 		}
-		else dispatch(openSnackBarMajorVillage({
+		else dispatch(openSnackBar({
 			message: "Error username or password invalid!",
 			severity: "warning",
 			title: "Login",
 		}));
 	}).catch(response => {
-		dispatch(openSnackBarMajorVillage({
+		console.log("Response catch -- : ", response);
+		dispatch(openSnackBar({
 			message: response.message,
 			severity: "error",
 			title: "Login"
 		}));
 	}));
-
+	
 	return (
 		<React.Fragment>
 			<Grid container className={styles.container}>
@@ -62,7 +71,7 @@ const FormLoginComponent: React.FC = () => {
 							label="Username"
 							type={"text"}
 							size='small'
-							register={register("userName", { required: true })}
+							register={register("username", { required: true })}
 							errors={errors} />
 						<InputOutlinedComponent
 							label="Password"

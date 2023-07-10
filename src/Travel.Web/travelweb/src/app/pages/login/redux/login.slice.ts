@@ -5,13 +5,13 @@ import { IUser } from "../../../core/models/user/user";
 import { DecodeJwt } from "../../../core/services/decodejwt.service";
 import { login, logout } from "./login.actions";
 
- interface State {
-    loginApplicationRequest: ILoginApplicationRequest | undefined;
-    loginApplicationResponse: ILoginApplicationResponse | undefined;
-    user?: IUser;
-    loading: boolean;
-    error: any;
-    logged: boolean;
+interface State {
+	loginApplicationRequest: ILoginApplicationRequest | undefined;
+	loginApplicationResponse: ILoginApplicationResponse | undefined;
+	user?: IUser;
+	loading: boolean;
+	error: any;
+	logged: boolean;
 }
 
 const loginStateInitial: State = {
@@ -19,14 +19,14 @@ const loginStateInitial: State = {
 	loginApplicationResponse: undefined,
 	loading: false,
 	error: undefined,
-	logged:false,
+	logged: false,
 };
 
 export const authSlice = createSlice({
 	name: "auth",
 	initialState: loginStateInitial,
 	reducers: {
-		updateLogged: (state,action: PayloadAction<boolean>) => {
+		updateLogged: (state, action: PayloadAction<boolean>) => {
 			state.logged = action.payload;
 		},
 	},
@@ -37,11 +37,14 @@ export const authSlice = createSlice({
 		});
 		builder.addCase(login.fulfilled, (state, action) => {
 			state.loginApplicationResponse = action.payload;
-			state.user = DecodeJwt.decodeJwt(state.loginApplicationResponse.token);
+			console.log("Response login -- full: -- " ,action.payload);
+			if (state.loginApplicationResponse.access_token !== undefined)
+				state.user = DecodeJwt.decodeJwt(state.loginApplicationResponse.access_token);
 			state.loginApplicationRequest = undefined;
 			state.loading = false;
 		});
 		builder.addCase(login.rejected, (state) => {
+			console.log("Response login: -- reject");
 			state.loading = false;
 			state.logged = false;
 			state.loginApplicationRequest = undefined;

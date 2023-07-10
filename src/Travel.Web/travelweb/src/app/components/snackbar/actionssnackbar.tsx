@@ -1,10 +1,10 @@
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import CloseIcon from "@mui/icons-material/Close";
-import { Button, CardActions, CardContent, CardHeader, Divider, IconButton, Paper, PaperProps, Stack, Typography } from "@mui/material";
+import { Button, CardActions, CardContent, CardHeader, Divider, IconButton, Paper, PaperProps, Stack } from "@mui/material";
 import styles from "./actionssnackbar.module.css";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { closeSnackBarActionsMajorVillage, executeAction } from "./redux/snackbarslice";
+import { closeSnackBarActions, executeAction } from "./redux/snackbarslice";
 import { TransitionLeft } from "./snackbar.component";
 
 const CardSnackBar = React.forwardRef<HTMLDivElement, PaperProps>(function Alert(
@@ -17,7 +17,7 @@ const CardSnackBar = React.forwardRef<HTMLDivElement, PaperProps>(function Alert
 	);
 });
 
-const SnackbarMajorVillageAction: React.FC = () => {
+const SnackbarAction: React.FC = () => {
 	const snackBarState = useAppSelector(state => state.snack.optionSnackBarActions);
 	const dispatch = useAppDispatch();
 
@@ -39,17 +39,17 @@ const SnackbarMajorVillageAction: React.FC = () => {
 		<Stack spacing={2} sx={{ width: "100%" }}>
 			<Snackbar
 				open={snackBarState.open}
-				onClose={() => dispatch(closeSnackBarActionsMajorVillage())}
+				onClose={() => dispatch(closeSnackBarActions())}
 				TransitionComponent={TransitionLeft}
 				autoHideDuration={snackBarState.autoHideDuration}
-				key={"snackbaraction-majorvillage"}>
+				key={"snackbaraction-app"}>
 				<CardSnackBar sx={{ width: "100%" }}>
 					<CardHeader
 						action={
 							<IconButton aria-label="settings" onClick={
 								() => {
 									dispatch(executeAction(false));
-									dispatch(closeSnackBarActionsMajorVillage());
+									dispatch(closeSnackBarActions());
 								}}>
 								<CloseIcon />
 							</IconButton>
@@ -64,12 +64,12 @@ const SnackbarMajorVillageAction: React.FC = () => {
 					<CardActions>
 						<Button onClick={() => { 
 							dispatch(executeAction(true));
-							dispatch(closeSnackBarActionsMajorVillage());
+							dispatch(closeSnackBarActions());
 						}}> Accept </Button>
 						<Button onClick={
 							() => {
 								dispatch(executeAction(false));
-								dispatch(closeSnackBarActionsMajorVillage());
+								dispatch(closeSnackBarActions());
 							}}> Cancel </Button>
 					</CardActions>
 				</CardSnackBar>
@@ -78,4 +78,4 @@ const SnackbarMajorVillageAction: React.FC = () => {
 	);
 };
 
-export default SnackbarMajorVillageAction;
+export default SnackbarAction;

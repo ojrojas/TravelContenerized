@@ -197,7 +197,7 @@ const SearchAppBar: React.FC<Props> = ({ onClick }) => {
 						noWrap
 						component="div"
 						sx={{ display: { xs: "none", sm: "block" } }}>
-						Major Village
+						Travel
 					</Typography>
 					<Search>
 						<SearchIconWrapper>

@@ -19,7 +19,6 @@ public class InitializerDbContext
     /// Initializer db context
     /// </summary>
     /// <param name="context">Context Application</param>
-    /// <param name="context2">Context IdentityServer</param>
     public InitializerDbContext(IdentityTravelDbContext context)
     {
         _context = context;
@@ -78,6 +77,7 @@ public class InitializerDbContext
                         Permissions.Endpoints.Token,
                         Permissions.GrantTypes.ClientCredentials,
                         Permissions.GrantTypes.AuthorizationCode,
+                        Permissions.GrantTypes.Password,
                         Permissions.Endpoints.Authorization,
                         Permissions.ResponseTypes.Code,
                         Permissions.Scopes.Email,
@@ -86,6 +86,29 @@ public class InitializerDbContext
                         Permissions.Prefixes.Scope + "api1",
                     },
                     PostLogoutRedirectUris = { new Uri($"{clientsUrls["library"]}/swagger") },
+                });
+            }
+
+            if (await manager.FindByClientIdAsync("travelweb-client") is null)
+            {
+                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "travelweb-client",
+                    DisplayName = "Travel Web React",
+                    ClientSecret = "07c4d6bf-4da5-433b-98ff-9545172955a7",
+
+                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") },
+                    Permissions = {
+                        Permissions.Endpoints.Token,
+                        Permissions.GrantTypes.Password,
+                        Permissions.Endpoints.Authorization,
+                        Permissions.ResponseTypes.Token,
+                        Permissions.Scopes.Email,
+                        Permissions.Scopes.Profile,
+                        Permissions.Scopes.Roles,
+                        Permissions.Prefixes.Scope + "aggregator",
+                    },
+                    PostLogoutRedirectUris = { new Uri($"{clientsUrls["travelweb"]}/login") },
                 });
             }
 
@@ -140,4 +163,3 @@ public class InitializerDbContext
         }
     }
 }
-

@@ -1,7 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using static OpenIddict.Abstractions.OpenIddictConstants;
-
-namespace Identity.Api.DI;
+﻿namespace Identity.Api.DI;
 
 public static class DIOpenIddictApplication
 {
@@ -17,7 +14,10 @@ public static class DIOpenIddictApplication
 
             config.AddServer(opt =>
             {
+                // this implementation only need allow password and credentials flow
                 opt.AllowClientCredentialsFlow()
+                .AllowPasswordFlow()
+                .AcceptAnonymousClients()
                 .AllowAuthorizationCodeFlow()
                 .RequireProofKeyForCodeExchange();
 
@@ -29,8 +29,7 @@ public static class DIOpenIddictApplication
                     Convert.FromBase64String("QXBwbGljYXRpb25UcmF2ZWxTb2x1dGlvbnNJZGVudCs=")));
 
                 opt.AddSigningCertificate(Certificate.GetCert());
-
-                opt.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles, "api1");
+                opt.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles, "api1", "aggregator");
 
                 opt.UseAspNetCore()
                 .DisableTransportSecurityRequirement()

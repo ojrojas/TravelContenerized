@@ -13,7 +13,7 @@ const BreadCrumbsComponent: React.FC<Props> = ({ subNamePage}) => {
 		<Box component='div' role='presentation'>
 			<Breadcrumbs aria-label='breadcrumb'>
 				<Button color='inherit' onClick={()=> navigateOn("../"+RouteConstanstPage.dashboard)}>
-                    Major Village
+                    Travel
 				</Button>
 				<Typography color='text.primary'>
 					{subNamePage}

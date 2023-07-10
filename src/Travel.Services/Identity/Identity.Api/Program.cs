@@ -1,9 +1,3 @@
-using Identity.Api.Endpoints;
-using Identity.Core.Helpers;
-using Microsoft.AspNetCore.HttpOverrides;
-using OpenIddict.Validation.AspNetCore;
-using Serilog;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
@@ -42,11 +36,19 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
-var app = builder.Build();
-
 var urls = configuration["UrlsAllow"];
 ArgumentNullException.ThrowIfNull(urls);
 var clientUrls = TransformString.TransformStringtoDictionary(urls);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "IdentityCorsPolicy",
+    builder => builder.WithOrigins(clientUrls.Select(x=> x.Value).ToArray()).AllowAnyMethod().AllowAnyHeader());
+});
+
+
+var app = builder.Build();
+
 
 using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
@@ -68,6 +70,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("IdentityCorsPolicy");
+
 app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
@@ -75,12 +79,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGroup("").AuthorizationEndpointsGroup();
 app.MapGroup("").ApplicationUserEndpointsGroup();
 
 app.MapGet("/api", [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 (ClaimsPrincipal user) => user.Identity!.Name);
-
+app.MapGroup("").UserEndpointsGroup();
 
 app.Run();
 

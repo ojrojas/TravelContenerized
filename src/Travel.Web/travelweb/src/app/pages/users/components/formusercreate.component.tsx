@@ -5,13 +5,11 @@ import styles from "./formusercreate.module.css";
 import { IUser } from "../../../core/models/user/user";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import useYupValidationResolver from "../../../components/forms/resolver.function";
-import SelectOutlinedComponet, { PropsOptions } from "../../../components/forms/select.component";
-import SwitchCompontent from "../../../components/forms/switch.component";
 import { createUser, updateUser, getAllUsers } from "../redux/users-actions";
 import LoadingBackdropComponent from "../../../components/loaders/backdrop.component";
 import InputOutlinedComponent from "../../../components/forms/input.component";
 import { schema } from "../schemas/formusercreate.schema";
-import { openSnackBarMajorVillage } from "../../../components/snackbar/redux/snackbarslice";
+import { openSnackBar } from "../../../components/snackbar/redux/snackbarslice";
 
 interface createUserForm {
     onClose: () => void;
@@ -36,14 +34,14 @@ const FormUserCreateComponent: React.FC<createUserForm> = ({ onClose, userExists
 		if (typeComponent === "CREATE") {
 			dispatch(createUser({ user })).unwrap().then(async (response) => {
 				if (response?.userCreated === null) {
-					dispatch(openSnackBarMajorVillage({
+					dispatch(openSnackBar({
 						message: `Error, ${JSON.stringify(error, null, 2)}`,
 						severity: "error",
 						title: "Users"
 					}));
 				}
 				else {
-					dispatch(openSnackBarMajorVillage({
+					dispatch(openSnackBar({
 						message: "User created!",
 						severity: "success",
 						title: "Users"
@@ -54,13 +52,13 @@ const FormUserCreateComponent: React.FC<createUserForm> = ({ onClose, userExists
 		else {
 			await dispatch(updateUser({ user })).unwrap().then(async (response) => {
 				if (response?.userUpdated === null) {
-					await dispatch(openSnackBarMajorVillage({
+					await dispatch(openSnackBar({
 						message: `Error, ${JSON.stringify(error, null, 2)}`,
 						severity: "error"
 					}));
 				}
 				else {
-					await dispatch(openSnackBarMajorVillage({
+					await dispatch(openSnackBar({
 						message: "User created!",
 						severity: "success"
 					}));

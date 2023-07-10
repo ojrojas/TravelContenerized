@@ -54,7 +54,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionIdentity=host=sql-identity;port=5432;database=IdentityDb;username=postgres;password=${IDENTITY_PASSWORD}
-      - UrlsAllow=identity@http://${DNS_DOCKER_TRAVEL_IP}:5105,library@http://${DNS_DOCKER_TRAVEL_IP}:5206,aggregator@http://${DNS_DOCKER_TRAVEL_IP}:5010
+      - UrlsAllow=identity@http://${DNS_DOCKER_TRAVEL_IP}:5105,library@http://${DNS_DOCKER_TRAVEL_IP}:5206,aggregator@http://${DNS_DOCKER_TRAVEL_IP}:5010,travelweb@http://localhost:3000
       - SecretPhrase=Tr@V3l73$7@PPL1C@710N
     ports:
       - "5105:80"
@@ -86,10 +86,23 @@ services:
     networks:
       - identitynet
 
+  # travel.web:
+  #   container_name: travel.web
+  #   depends_on:
+  #     - identity.api
+  #     - travel.aggregator
+  #   ports:
+  #     - "5506:80"
+  #   networks:
+  #     - identitynet
+  #     - travelnet
+
 networks:
   identitynet:
     driver: bridge
   librarynet:
+    driver: bridge
+  travelnet:
     driver: bridge
 
 volumes:

@@ -9,6 +9,7 @@ const DashboardPage: React.FC = () => {
 					<Typography variant={"h6"} component='h6'>
                             Dashboard
 					</Typography>
+			<Grid>This layout is empty... </Grid>
 				</Paper>
 			</Grid>
 		</Grid>

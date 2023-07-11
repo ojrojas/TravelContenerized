@@ -1,11 +1,4 @@
-using HealthChecks.UI.Client;
-using Library.Api.DI;
-using Library.Api.Services;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.IdentityModel.Logging;
-using Serilog;
-using Travel.Commons.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +18,9 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
 builder.Services.AddSwaggerApplication(configuration);
 builder.Services.AddJwtApplication(configuration);
+
+builder.Services.AddDIOpenIddictApplication(configuration);
+builder.Services.AddDIAuthenticationApplication();
 
 builder.Services.AddApplicationServices(configuration);
 

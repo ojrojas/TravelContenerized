@@ -35,7 +35,11 @@ public class GrpcExceptionInterceptor : Interceptor
     {
         var call = continuation(request, context);
 
-        return new AsyncUnaryCall<TResponse>(HandleResponse(call.ResponseAsync), call.ResponseHeadersAsync, call.GetStatus, call.GetTrailers, call.Dispose);
+        return new AsyncUnaryCall<TResponse>(HandleResponse(call.ResponseAsync),
+                                             call.ResponseHeadersAsync,
+                                             call.GetStatus,
+                                             call.GetTrailers,
+                                             call.Dispose);
     }
 
     /// <summary>

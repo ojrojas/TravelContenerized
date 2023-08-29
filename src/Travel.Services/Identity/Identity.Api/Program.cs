@@ -71,7 +71,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGroup("").ApplicationUserEndpointsGroup();
+app.MapGroup(string.Empty).ApplicationUserEndpointsGroup();
 
 app.MapGet("/api", [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 (ClaimsPrincipal user) => user.Identity!.Name);

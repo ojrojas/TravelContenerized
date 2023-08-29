@@ -39,8 +39,8 @@ public static class DIOpenIddictApplication
                 .EnableLogoutEndpointPassthrough()
                 .EnableStatusCodePagesIntegration()
                 .EnableTokenEndpointPassthrough();
-            })
-            .AddValidation(opt =>
+            });
+            config.AddValidation(opt =>
             {
                 opt.UseLocalServer();
                 opt.UseAspNetCore();

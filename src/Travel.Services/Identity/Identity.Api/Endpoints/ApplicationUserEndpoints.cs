@@ -10,7 +10,7 @@ public static class ApplicationUserEndpoints
                    IOpenIddictApplicationManager _applicationManager,
                    IOpenIddictScopeManager _scopeManager) =>
         {
-            var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException("Error request operation not found clientcredentials");
+            var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException();
 
             if (request.IsClientCredentialsGrantType())
             {
@@ -25,6 +25,10 @@ public static class ApplicationUserEndpoints
 
             if(request.IsPasswordGrantType())
             {
+                ArgumentNullException.ThrowIfNull(request.ClientId, "Not found clientId request");
+                ArgumentNullException.ThrowIfNull(request.Username, "Not found username request");
+                ArgumentNullException.ThrowIfNull(request.Password, "Not found password request");
+
                 var response = await _service.LoginAsync(
                     new() {
                         ClientId = request.ClientId,
@@ -39,7 +43,13 @@ public static class ApplicationUserEndpoints
             throw new NotImplementedException("The specified grant type is not implemented.");
         });
 
-        group.MapMethods("/connect/authorize", new[] { HttpMethods.Get, HttpMethods.Post }, async (HttpContext context, IOpenIddictApplicationManager _applicationManager, IOpenIddictScopeManager _scopeManager) => {
+        group.MapMethods("/connect/authorize", 
+        new[] { HttpMethods.Get, HttpMethods.Post }, 
+        async (
+            HttpContext context, 
+            IOpenIddictApplicationManager _applicationManager,
+            IOpenIddictScopeManager _scopeManager) => {
+                
             var request = context.GetOpenIddictServerRequest() ?? throw new InvalidOperationException("Error request operation not found clientcredentials");
             var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
